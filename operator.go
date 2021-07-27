@@ -132,11 +132,16 @@ func convertToBool(o interface{}) (bool, bool) {
 		return b, true
 	}
 	v := reflect.ValueOf(o)
-	for o != nil && v.Kind() == reflect.Ptr {
+	for o != nil && v.Kind() == reflect.Ptr  && !v.IsNil() {
 		v = v.Elem()
 		o = v.Interface()
 	}
-	if o == false || o == nil || o == "false" || o == "FALSE" {
+
+	if o == nil {
+		return false, false
+	}
+
+	if o == false || o == "false" || o == "FALSE" {
 		return false, true
 	}
 	if o == true || o == "true" || o == "TRUE" {
@@ -172,7 +177,7 @@ func convertToFloat(o interface{}) (float64, bool) {
 		return i, true
 	}
 	v := reflect.ValueOf(o)
-	for o != nil && v.Kind() == reflect.Ptr {
+	for o != nil && v.Kind() == reflect.Ptr && !v.IsNil() {
 		v = v.Elem()
 		o = v.Interface()
 	}
