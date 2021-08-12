@@ -243,7 +243,14 @@ var base = NewLanguage(
 	Constant("true", true),
 	Constant("false", false),
 
-	InfixOperator("==", func(a, b interface{}) (interface{}, error) { return reflect.DeepEqual(a, b), nil }),
+	InfixOperator("==", func(a, b interface{}) (interface{}, error) {
+		if (reflect.ValueOf(a).Kind() == reflect.Ptr && reflect.ValueOf(a).IsNil() || a == nil) &&
+			(reflect.ValueOf(b).Kind() == reflect.Ptr && reflect.ValueOf(b).IsNil() || b == nil) {
+			return true, nil
+		}
+
+		return reflect.DeepEqual(a, b), nil
+	}),
 	InfixOperator("!=", func(a, b interface{}) (interface{}, error) { return !reflect.DeepEqual(a, b), nil }),
 	parentheses,
 
